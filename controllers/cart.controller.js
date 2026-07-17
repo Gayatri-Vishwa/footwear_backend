@@ -20,29 +20,3 @@ export const updateCart = async (req, resp) => {
     resp.status(500).json({ message: " Server error", error: error.message });
   }
 };
-
-// export const getCart = async (req, res) => {
-//   try {
-//     const userId = req.user; // SAME as updateCart
-
-//     const user = await User.findById(userId).select("cartItems");
-
-//     if (!user) {
-//       return res.status(404).json({
-//         success: false,
-//         message: "User not found",
-//       });
-//     }
-
-//     res.status(200).json({
-//       success: true,
-//       cartItems: user.cartItems,
-//     });
-//   } catch (error) {
-//     res.status(500).json({
-//       success: false,
-//       message: "Server error",
-//       error: error.message,
-//     });
-//   }
-// };

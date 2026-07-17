@@ -27,8 +27,8 @@ export const registerUser = async (req, resp) => {
     resp.cookie("token", token, {
       //store token in cookie
       httpOnly: true,
-      secure:true, //use secure cookies in  production
-      sameSite:  "none" , // helps prevent CSRF attacks
+      secure: true, //use secure cookies in  production
+      sameSite: "none", // helps prevent CSRF attacks
       maxAge: 7 * 24 * 60 * 60 * 1000, // 7 days age in millisec
     });
     resp.json({
@@ -48,7 +48,7 @@ export const registerUser = async (req, resp) => {
 //login api
 export const loginUser = async (req, resp) => {
   try {
-      console.log("login ");
+    console.log("login ");
     const { email, password } = req.body;
     if (!email || !password) {
       return resp.status(400).json({
@@ -77,26 +77,19 @@ export const loginUser = async (req, resp) => {
       //store token in cookie
       httpOnly: true,
       secure: true, //use secure cookies in  production
-      sameSite:  "none" , // helps prevent CSRF attacks
+      sameSite: "none", // helps prevent CSRF attacks
       maxAge: 7 * 24 * 60 * 60 * 1000, // 7 days age in millisec
     });
     resp.json({
       message: "user loggedIn successfully",
       success: true,
-      // user: {
-      //   name: user.name,
-      //   email: user.email,
-      // },
+
       user: {
-  _id: user._id,
-  name: user.name,
-  email: user.email,
-}
-
-    }
-
-  
-  );
+        _id: user._id,
+        name: user.name,
+        email: user.email,
+      },
+    });
   } catch (error) {
     console.log(error);
     resp.status(500).json({ message: "internal server Error" });
@@ -116,17 +109,12 @@ export const logeOutUser = async (req, resp) => {
       .status(200)
       .json({ message: "User loggedOut successfully", success: true });
   } catch (error) {
-    console.log(error,"nhi hua ");
+    console.log(error, "nhi hua ");
     return resp
       .status(500)
       .json({ message: "internal server error", success: false });
   }
 };
-
-
-
-
-
 
 //check auth user : /api/user/is-auth
 export const isAuthUser = async (req, resp) => {
@@ -138,7 +126,7 @@ export const isAuthUser = async (req, resp) => {
     const user = await User.findById(userId).select("-password");
     resp.json({
       success: true,
-      user
+      user,
     });
   } catch (error) {
     console.log(error);

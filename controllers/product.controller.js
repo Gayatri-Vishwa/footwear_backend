@@ -1,47 +1,6 @@
 import Product from "../models/product.model.js";
 import cloudinary, { connectCloudinary } from "../config/cloudinary.js";
 
-
-
-//    /api/product/add-product
-// export const addProduct = async (req, resp) => {
-//   try {
-    
-//      console.log("BODY:", req.body); 
-//     const { name, description, price, offerPrice, category} = req.body;
-//     const image = req.files?.map((file) => file.path); // Cloudinary URLs
-
-//     // const image = req.files?.map((file)=>file.filename);
-//      if (
-//       !name ||
-//       !price ||
-//       !offerPrice ||
-//       !description ||
-//       !category ||
-//       !image ||
-//       image.length === 0
-//     ) {
-//       return resp.status(400).json({
-//         success: false,
-//         message: "All fields including images are required",
-//       });
-//     }
-//     const newProduct =await Product.create({
-//       name,
-//       description,
-//       price,
-//       offerPrice,
-//       category,
-//       image,
-//     });
-//     resp.status(201).json({message:"Product Added successfully" , success:true ,product:newProduct})
-//   } catch (error) {
-//     resp.status(500).json({ message: " Server error", error: error.message });
-//   }
-// };
-
-
-
 const uploadBufferToCloudinary = (buffer) => {
   return new Promise((resolve, reject) => {
     const stream = cloudinary.uploader.upload_stream(
@@ -49,7 +8,7 @@ const uploadBufferToCloudinary = (buffer) => {
       (error, result) => {
         if (error) return reject(error);
         resolve(result.secure_url);
-      }
+      },
     );
     stream.end(buffer);
   });
@@ -59,7 +18,12 @@ export const addProduct = async (req, res) => {
   try {
     // debug: log incoming request summary
     console.log("[addProduct] req.body keys:", Object.keys(req.body));
-    console.log("[addProduct] req.files present:", Array.isArray(req.files), "count:", req.files?.length);
+    console.log(
+      "[addProduct] req.files present:",
+      Array.isArray(req.files),
+      "count:",
+      req.files?.length,
+    );
     console.log("[addProduct] Cloudinary env:", {
       cloud: !!process.env.CLOUDINARY_CLOUD_NAME,
       key: !!process.env.CLOUDINARY_API_KEY,
@@ -77,7 +41,7 @@ export const addProduct = async (req, res) => {
     }
 
     const image = await Promise.all(
-      files.map((file) => uploadBufferToCloudinary(file.buffer))
+      files.map((file) => uploadBufferToCloudinary(file.buffer)),
     );
 
     const newProduct = await Product.create({
@@ -89,10 +53,14 @@ export const addProduct = async (req, res) => {
     res.status(201).json({ success: true, product: newProduct });
   } catch (err) {
     console.error("[addProduct] ERROR:", err && err.stack ? err.stack : err);
-    res.status(500).json({ success: false, message: err.message || "Internal Server Error" });
+    res
+      .status(500)
+      .json({
+        success: false,
+        message: err.message || "Internal Server Error",
+      });
   }
 };
-
 
 //get all products : /api/product/get
 export const getProducts = async (req, resp) => {
@@ -104,38 +72,44 @@ export const getProducts = async (req, resp) => {
   }
 };
 
-
 //get single product by id  :  /api/product/id
 
-export const getProductById=async(req,resp)=>{
-    try {
-       const { id } = req.params;
-        // const {id}=req.body
-       
+export const getProductById = async (req, resp) => {
+  try {
+    const { id } = req.params;
+    // const {id}=req.body
 
-        const product=await Product.findById(id)
-        if(!product){
-            return resp.status(400).json({ message: " product not found", success:false });
-        }
-        return resp.status(200).json({ product, success:true });
-    } catch (error) {
-          resp.status(500).json({ message: " Server error", error: error.message });
+    const product = await Product.findById(id);
+    if (!product) {
+      return resp
+        .status(400)
+        .json({ message: " product not found", success: false });
     }
-}
+    return resp.status(200).json({ product, success: true });
+  } catch (error) {
+    resp.status(500).json({ message: " Server error", error: error.message });
+  }
+};
 
 //change stock         /api/product/stock
-export const changeStock=async(req,resp)=>{
-    try {
-        const {id, inStock}=req.body
-        const product=await Product.findByIdAndUpdate(id,{inStock}, {new:true})
-            return resp.status(200).json({ product, massage:"stock updated successfully", success:true });
-    } catch (error) {
-           resp.status(500).json({ message: " Server error", error: error.message });
-    }
-}
+export const changeStock = async (req, resp) => {
+  try {
+    const { id, inStock } = req.body;
+    const product = await Product.findByIdAndUpdate(
+      id,
+      { inStock },
+      { new: true },
+    );
+    return resp
+      .status(200)
+      .json({ product, massage: "stock updated successfully", success: true });
+  } catch (error) {
+    resp.status(500).json({ message: " Server error", error: error.message });
+  }
+};
 
+//    update img only (Next version )
 
-//update img only 
 // export const updateProductImage = async (req, res) => {
 //   try {
 //     const { id } = req.params;
@@ -168,20 +142,3 @@ export const changeStock=async(req,resp)=>{
 //     });
 //   }
 // };
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-

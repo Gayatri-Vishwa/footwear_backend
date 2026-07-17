@@ -25,7 +25,7 @@ export const placeOrderCOD = async (req, resp) => {
 
     amount += Math.floor((amount * 2) / 100); // tax
 
-    // ✅ create order
+    //  create order
     await Order.create({
       userId,
       items,

@@ -2,9 +2,9 @@
 import jwt from 'jsonwebtoken'
 
 
-export const authSeller=(req,resp,next)=>{          // this will check is user loggedin or not at the time of logout api, will pass thi sin logout route
-    try {
-        const {sellerToken}=req.cookies;                //getting token  from cookies...that means you must be using cookie-parser in index.js// app.use(cookieParser())
+export const authSeller=(req,resp,next)=>{        
+     try {
+        const {sellerToken}=req.cookies;                
         if(!sellerToken){
               return resp.status(401).json({message:"UnAuthorize" ,success:false})
         }
