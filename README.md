@@ -1,4 +1,4 @@
-# 🛒 Grocery E-Commerce - Backend
+# 🛒 footwear- Backend
 
 A secure and scalable backend for the **Grocery E-Commerce** application built with **Node.js**, **Express.js**, and **MongoDB**. It powers product management, authentication, cart operations, and order processing through RESTful APIs.
 
