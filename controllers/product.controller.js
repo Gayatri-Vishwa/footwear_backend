@@ -1,23 +1,37 @@
 import Product from "../models/product.model.js";
 import cloudinary, { connectCloudinary } from "../config/cloudinary.js";
 
-const uploadBufferToCloudinary = (buffer) => {
-  return new Promise((resolve, reject) => {
-    const stream = cloudinary.uploader.upload_stream(
-      { folder: "ecommerce", resource_type: "image" },
-      (error, result) => {
-        if (error) return reject(error);
-        resolve(result.secure_url);
-      },
-    );
-    stream.end(buffer);
+// const uploadBufferToCloudinary = (buffer) => {
+//   return new Promise((resolve, reject) => {
+//     const stream = cloudinary.uploader.upload_stream(
+//       { folder: "ecommerce", resource_type: "image" },
+//       (error, result) => {
+//         if (error) return reject(error);
+//         resolve(result.secure_url);
+//       },
+//     );
+//     stream.end(buffer);
+//   });
+// };
+
+
+const uploadBufferToCloudinary = async (buffer) => {
+  const base64 = `data:image/jpeg;base64,${buffer.toString("base64")}`;
+
+  const result = await cloudinary.uploader.upload(base64, {
+    folder: "ecommerce",
+    resource_type: "image",
   });
+
+  return result.secure_url;
 };
 
 export const addProduct = async (req, res) => {
   try {
     // debug: log incoming request summary
     console.log("[addProduct] req.body keys:", Object.keys(req.body));
+    console.log("Cloud:", process.env.CLOUDINARY_CLOUD_NAME);
+console.log("Key last 4:", process.env.CLOUDINARY_API_KEY?.slice(-4));
     console.log(
       "[addProduct] req.files present:",
       Array.isArray(req.files),
@@ -30,7 +44,7 @@ export const addProduct = async (req, res) => {
       secret: !!process.env.CLOUDINARY_API_SECRET,
     });
 
-    await connectCloudinary();
+    // await connectCloudinary();
 
     const files = req.files || [];
     if (files.length === 0) {
@@ -43,6 +57,7 @@ export const addProduct = async (req, res) => {
     const image = await Promise.all(
       files.map((file) => uploadBufferToCloudinary(file.buffer)),
     );
+    
 
     const newProduct = await Product.create({
       ...req.body,
@@ -108,7 +123,7 @@ export const changeStock = async (req, resp) => {
   }
 };
 
-//    update img only (Next version )
+//  //  update img only (Next version )
 
 // export const updateProductImage = async (req, res) => {
 //   try {

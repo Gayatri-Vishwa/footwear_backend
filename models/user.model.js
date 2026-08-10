@@ -17,7 +17,7 @@ const userSchema = new mongoose.Schema(
     },
     cartItems: { type: Object, default: {} },
   },
-  { minimize: false }  // means...  "Even if the object is empty, do not remove it — save it as {}."
+  { minimize: false }  // means...  "Even if the object is empty, do not remove it    save it as {}."
 );
 
 const User= mongoose.model("User", userSchema)
